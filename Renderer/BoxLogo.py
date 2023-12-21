@@ -4,40 +4,39 @@ from Tools.LoadPixmap import LoadPixmap
 from Tools.Directories import SCOPE_GUISKIN, resolveFilename, fileExists
 
 def getLogoPath(logoType):
+	def findLogo(logo):
+		return (f := resolveFilename(SCOPE_GUISKIN, logo)) and fileExists(f) and f or ""
 	if logoType == "model":
-		if fileExists("/usr/share/enigma2/boxlogo.svg"):
-			return "/usr/share/enigma2/boxlogo.svg"
-		elif fileExists("/usr/share/enigma2/distrologo.svg"):
-			return "/usr/share/enigma2/distrologo.svg"
-		else:
-			return ""
-	elif logoType == "brand" and fileExists("/usr/share/enigma2/brandlogo.svg"):
-		return "/usr/share/enigma2/brandlogo.svg"
-	elif logoType == "distro" and fileExists("/usr/share/enigma2/distrologo.svg"):
-		return "/usr/share/enigma2/distrologo.svg"
-
+		if (f := findLogo("boxlogo.svg")):
+			return f
+		elif (f := findLogo("distrologo.svg")):
+			return f
+	elif logoType == "brand":
+		return findLogo("brandlogo.svg")
+	elif logoType == "distro":
+		return findLogo("distrologo.svg")
 	return ""
 
 def getDefaultLogo(logoType, width, height):
 		if logoType == "model":
-			defaultPngName = resolveFilename(SCOPE_GUISKIN, "icons/logos/boxlogo.svg")
+			defaultLogoPath = resolveFilename(SCOPE_GUISKIN, "skinlogo.svg")
 		elif logoType == "brand":
-			defaultPngName = resolveFilename(SCOPE_GUISKIN, "icons/logos/brandlogo.svg")
+			defaultLogoPath = resolveFilename(SCOPE_GUISKIN, "skinlogo_small.svg")
 		else:
-			defaultPngName = resolveFilename(SCOPE_GUISKIN, "icons/logos/boxlogo.svg")
+			defaultLogoPath = resolveFilename(SCOPE_GUISKIN, "skinlogo.svg")
 
-		is_svg = defaultPngName and defaultPngName.endswith(".svg")
-		return LoadPixmap(defaultPngName, width=width, height=0 if is_svg else height)
+		is_svg = defaultLogoPath and defaultLogoPath.endswith(".svg")
+		return defaultLogoPath and LoadPixmap(defaultLogoPath, width=width, height=0 if is_svg else height)
 
 def setLogo(px, logoType, width, height):
-	pngname = getLogoPath(logoType)
-	is_svg = pngname and pngname.endswith(".svg")
-	png = pngname and LoadPixmap(pngname, width=width, height=0 if is_svg else height)
-	if png != None:
-		px.setPixmap(png)
+	logoPath = getLogoPath(logoType)
+	is_svg = logoPath and logoPath.endswith(".svg")
+	pix = logoPath and LoadPixmap(logoPath, width=width, height=0 if is_svg else height)
+	if pix:
+		px.setPixmap(pix)
 	else:
 		defaultLogo = getDefaultLogo(logoType, width, height)
-		if defaultLogo != None:
+		if defaultLogo:
 			px.setPixmap(defaultLogo)
 
 

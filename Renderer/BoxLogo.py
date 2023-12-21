@@ -7,14 +7,14 @@ def getLogoPath(logoType):
 	def findLogo(logo):
 		return (f := resolveFilename(SCOPE_GUISKIN, logo)) and fileExists(f) and f or ""
 	if logoType == "model":
-		if (f := findLogo("boxlogo.svg")):
+		if (f := findLogo("logos/boxlogo.svg")):
 			return f
-		elif (f := findLogo("distrologo.svg")):
+		elif (f := findLogo("logos/distrologo.svg")):
 			return f
 	elif logoType == "brand":
-		return findLogo("brandlogo.svg")
+		return findLogo("logos/brandlogo.svg")
 	elif logoType == "distro":
-		return findLogo("distrologo.svg")
+		return findLogo("logos/distrologo.svg")
 	return ""
 
 def getDefaultLogo(logoType, width, height):

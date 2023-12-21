@@ -3,7 +3,7 @@ from Components.Renderer.Renderer import Renderer
 from Tools.LoadPixmap import LoadPixmap
 from Tools.Directories import SCOPE_GUISKIN, resolveFilename, fileExists
 
-def getLogoPngPath(logoType):
+def getLogoPath(logoType):
 	if logoType == "model":
 		if fileExists("/usr/share/enigma2/boxlogo.svg"):
 			return "/usr/share/enigma2/boxlogo.svg"
@@ -30,7 +30,7 @@ def getDefaultLogo(logoType, width, height):
 		return LoadPixmap(defaultPngName, width=width, height=0 if is_svg else height)
 
 def setLogo(px, logoType, width, height):
-	pngname = getLogoPngPath(logoType)
+	pngname = getLogoPath(logoType)
 	is_svg = pngname and pngname.endswith(".svg")
 	png = pngname and LoadPixmap(pngname, width=width, height=0 if is_svg else height)
 	if png != None:

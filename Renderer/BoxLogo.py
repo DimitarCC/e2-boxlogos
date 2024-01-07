@@ -1,4 +1,4 @@
-from enigma import ePixmap
+from enigma import ePixmap, ePoint
 from Components.Renderer.Renderer import Renderer
 from Tools.LoadPixmap import LoadPixmap
 from Tools.Directories import SCOPE_GUISKIN, resolveFilename, fileExists
@@ -26,19 +26,34 @@ def getDefaultLogo(logoType, width, height):
 			defaultLogoPath = resolveFilename(SCOPE_GUISKIN, "skinlogo.svg")
 
 		is_svg = defaultLogoPath and defaultLogoPath.endswith(".svg")
-		return defaultLogoPath and LoadPixmap(defaultLogoPath, width=width, height=0 if is_svg else height)
+		return defaultLogoPath and LoadPixmap(defaultLogoPath, width=0 if is_svg else width, height=height)
 
 def setLogo(px, logoType, width, height):
 	logoPath = getLogoPath(logoType)
 	is_svg = logoPath and logoPath.endswith(".svg")
-	pix = logoPath and LoadPixmap(logoPath, width=width, height=0 if is_svg else height)
+	pix = logoPath and LoadPixmap(logoPath, width=0 if is_svg else width, height=height)
 	if pix:
 		px.setPixmap(pix)
+		centerLogo(px, pix, width, height)
 	else:
 		defaultLogo = getDefaultLogo(logoType, width, height)
 		if defaultLogo:
 			px.setPixmap(defaultLogo)
+			centerLogo(px, defaultLogo, width, height)
 
+def centerLogo(px, px_scaled, width, height):
+	px_size = px_scaled.size()
+	px_pos = px.position()
+	x = 0
+	y = 0
+	if px_size.width() < width:
+		x = (width - px_size.width()) // 2
+	
+	if px_size.height() < height:
+		y = (height - px_size.height()) // 2
+		
+	px.move(ePoint(px_pos.x() + x, px_pos.y() + y))
+	px.resize(px_size)
 
 class BoxLogo(Renderer):
 	def __init__(self):
@@ -63,4 +78,3 @@ class BoxLogo(Renderer):
 	def onShow(self):
 		if self.instance:
 			setLogo(self.instance, self.logoType, self.instance.size().width(), self.instance.size().height())
-	

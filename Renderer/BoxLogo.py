@@ -28,14 +28,8 @@ def getDefaultLogo(logoType, width, height):
 		return detectAndFitPix(defaultLogoPath, width=width, height=height)
 
 def detectAndFitPix(path, width, height):
-	is_svg = path and path.endswith(".svg")
-	if path:
-		px_orig = LoadPixmap(path) #load pixmap so to detect the aspect ratio due to the fact smart fit is not implemented in c++
-		px_orig_size = px_orig.size()
-		isFitByWidth = px_orig_size.width() > px_orig_size.height()
-		isFitByHeight = px_orig_size.width() < px_orig_size.height()
-		return LoadPixmap(path, width=0 if is_svg and isFitByWidth else width, height=0 if is_svg and isFitByHeight else height)
-	return None
+	return path and LoadPixmap(path, width=width, height=height, scaletoFit=True)
+
 
 def setLogo(px, logoType, width, height):
 	logoPath = getLogoPath(logoType)

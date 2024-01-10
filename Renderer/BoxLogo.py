@@ -27,37 +27,24 @@ def getDefaultLogo(logoType, width, height):
 
 		return detectAndFitPix(defaultLogoPath, width=width, height=height)
 
-def detectAndFitPix(path, width, height):
-	return path and LoadPixmap(path, width=width, height=height, scaletoFit=True)
+def detectAndFitPix(path, width, height, align):
+	align_enum = 4
+	if align == "right":
+		align_enum = 2
+	elif align == "left":
+		align_enum = 1
+	return path and LoadPixmap(path, width=width, height=height, scaletoFit=True, align=align_enum)
 
 
 def setLogo(px, logoType, width, height, halign):
 	logoPath = getLogoPath(logoType)
-	pix = detectAndFitPix(logoPath, width=width, height=height)
+	pix = detectAndFitPix(logoPath, width=width, height=height, align=halign)
 	if pix:
 		px.setPixmap(pix)
-		alignLogo(px, pix, width, height, halign)
 	else:
 		defaultLogo = getDefaultLogo(logoType, width, height)
 		if defaultLogo:
 			px.setPixmap(defaultLogo)
-			alignLogo(px, defaultLogo, width, height, halign)
-
-def alignLogo(px, px_scaled, width, height, halign):
-	px_size = px_scaled.size()
-	px_pos = px.position()
-	x = 0
-	y = 0
-	if px_size.width() < width:
-		if halign == "center":
-			x = (width - px_size.width()) // 2
-		elif halign == "right":
-			x = width - px_size.width()
-	if px_size.height() < height:
-		y = (height - px_size.height()) // 2
-		
-	px.move(ePoint(px_pos.x() + x, px_pos.y() + y))
-	px.resize(px_size)
 
 class BoxLogo(Renderer):
 	def __init__(self):
@@ -84,4 +71,6 @@ class BoxLogo(Renderer):
 				
 	def onShow(self):
 		if self.instance:
+			x,y = self.position
+			print("LOGO PosX: %d" % (x))
 			setLogo(self.instance, self.logoType, self.instance.size().width(), self.instance.size().height(), self.halign)

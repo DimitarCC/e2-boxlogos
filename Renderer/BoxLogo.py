@@ -31,26 +31,28 @@ def detectAndFitPix(path, width, height):
 	return path and LoadPixmap(path, width=width, height=height, scaletoFit=True)
 
 
-def setLogo(px, logoType, width, height):
+def setLogo(px, logoType, width, height, halign):
 	logoPath = getLogoPath(logoType)
 	pix = detectAndFitPix(logoPath, width=width, height=height)
 	if pix:
 		px.setPixmap(pix)
-		centerLogo(px, pix, width, height)
+		alignLogo(px, pix, width, height, halign)
 	else:
 		defaultLogo = getDefaultLogo(logoType, width, height)
 		if defaultLogo:
 			px.setPixmap(defaultLogo)
-			centerLogo(px, defaultLogo, width, height)
+			alignLogo(px, defaultLogo, width, height, halign)
 
-def centerLogo(px, px_scaled, width, height):
+def alignLogo(px, px_scaled, width, height, halign):
 	px_size = px_scaled.size()
 	px_pos = px.position()
 	x = 0
 	y = 0
 	if px_size.width() < width:
-		x = (width - px_size.width()) // 2
-	
+		if halign == "center":
+			x = (width - px_size.width()) // 2
+		elif halign == "right":
+			x = width - px_size.width()
 	if px_size.height() < height:
 		y = (height - px_size.height()) // 2
 		
@@ -61,6 +63,7 @@ class BoxLogo(Renderer):
 	def __init__(self):
 		Renderer.__init__(self)
 		self.logoType = "model"
+		self.halign = "center"
 		
 	GUI_WIDGET = ePixmap
 
@@ -70,7 +73,9 @@ class BoxLogo(Renderer):
 			if attrib == "logoType":
 				self.logoType = value
 				attribs.remove((attrib, value))
-				break
+			elif attrib == "halign":
+				self.halign = value
+				attribs.remove((attrib, value))
 		self.skinAttributes = attribs
 		return Renderer.applySkin(self, desktop, parent)
 
@@ -79,4 +84,4 @@ class BoxLogo(Renderer):
 				
 	def onShow(self):
 		if self.instance:
-			setLogo(self.instance, self.logoType, self.instance.size().width(), self.instance.size().height())
+			setLogo(self.instance, self.logoType, self.instance.size().width(), self.instance.size().height(), self.halign)

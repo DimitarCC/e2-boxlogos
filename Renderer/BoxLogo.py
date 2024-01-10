@@ -1,4 +1,4 @@
-from enigma import ePixmap, ePoint
+from enigma import ePixmap, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER
 from Components.Renderer.Renderer import Renderer
 from Tools.LoadPixmap import LoadPixmap
 from Tools.Directories import SCOPE_GUISKIN, resolveFilename, fileExists
@@ -28,11 +28,11 @@ def getDefaultLogo(logoType, width, height):
 		return detectAndFitPix(defaultLogoPath, width=width, height=height)
 
 def detectAndFitPix(path, width, height, align):
-	align_enum = 4
+	align_enum = RT_HALIGN_CENTER
 	if align == "right":
-		align_enum = 2
+		align_enum = RT_HALIGN_RIGHT
 	elif align == "left":
-		align_enum = 1
+		align_enum = RT_HALIGN_LEFT
 	return path and LoadPixmap(path, width=width, height=height, scaletoFit=True, align=align_enum)
 
 

@@ -36,7 +36,7 @@ def detectAndFitPix(path, width, height, align):
 	return path and LoadPixmap(path, width=width, height=height, scaletoFit=True, align=align_enum)
 
 
-def setLogo(px, logoType, width, height, halign):
+def setLogo(px, logoType, width, height, halign="center"):
 	logoPath = getLogoPath(logoType)
 	pix = detectAndFitPix(logoPath, width=width, height=height, align=halign)
 	if pix:

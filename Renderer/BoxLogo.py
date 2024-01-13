@@ -17,7 +17,7 @@ def getLogoPath(logoType):
 		return findLogo("logos/distrologo.svg")
 	return ""
 
-def getDefaultLogo(logoType, width, height):
+def getDefaultLogo(logoType, width, height, halign):
 		if logoType == "model":
 			defaultLogoPath = resolveFilename(SCOPE_GUISKIN, "skinlogo.svg")
 		elif logoType == "brand":
@@ -25,7 +25,7 @@ def getDefaultLogo(logoType, width, height):
 		else:
 			defaultLogoPath = resolveFilename(SCOPE_GUISKIN, "skinlogo.svg")
 
-		return detectAndFitPix(defaultLogoPath, width=width, height=height)
+		return detectAndFitPix(defaultLogoPath, width=width, height=height, align=halign)
 
 def detectAndFitPix(path, width, height, align):
 	align_enum = RT_HALIGN_CENTER
@@ -42,7 +42,7 @@ def setLogo(px, logoType, width, height, halign="center"):
 	if pix:
 		px.setPixmap(pix)
 	else:
-		defaultLogo = getDefaultLogo(logoType, width, height)
+		defaultLogo = getDefaultLogo(logoType, width, height, halign)
 		if defaultLogo:
 			px.setPixmap(defaultLogo)
 
